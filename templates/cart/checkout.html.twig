@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1>Оформлення замовлення</h1>
+
+<div class="checkout-layout">
+
+    <div class="checkout-form">
+
+        {{ form_start(form) }}
+
+            <div class="form-group">
+                {{ form_label(form.customerName) }}
+                {{ form_widget(form.customerName) }}
+                {{ form_errors(form.customerName) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email) }}
+                {{ form_errors(form.email) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.address) }}
+                {{ form_widget(form.address) }}
+                {{ form_errors(form.address) }}
+            </div>
+
+            <button class="checkout-submit">
+                Підтвердити замовлення
+            </button>
+
+        {{ form_end(form) }}
+
+    </div>
+
+    <div class="checkout-summary">
+
+        <div class="checkout-summary-box">
+
+            <h2>Ваше замовлення</h2>
+
+            {% for item in items %}
+
+                <div class="checkout-item">
+
+                    <div>
+                        {{ item.name }}
+                        x{{ item.quantity }}
+                    </div>
+
+                    <div>
+                        {{ item.total }} грн
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+            <hr>
+
+            <div class="checkout-total">
+
+                <strong>
+                    Загалом:
+                </strong>
+
+                <strong>
+                    {{ total }} грн
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

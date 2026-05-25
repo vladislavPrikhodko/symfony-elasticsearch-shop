@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<div style="display:flex; gap:40px;">
+
+    <div>
+        {% if product.image %}
+            <img src="/uploads/products/{{ product.image }}" width="400">
+        {% endif %}
+    </div>
+
+    <div>
+
+        <h1>{{ product.name }}</h1>
+
+        <p><strong>Цена:</strong> {{ (product.price / 100)|number_format(2, '.', ' ') }} грн</p>
+
+        <p><strong>Остаток:</strong> {{ product.stock }}</p>
+
+        <hr>
+
+        <div>
+            {{ product.description|raw }}
+        </div>
+
+        <hr>
+
+        <p><strong>Категории:</strong></p>
+
+        {% for category in product.categories %}
+            <a href="{{ path('category_show', {slug: category.slug}) }}">
+                {{ category.name }}
+            </a>
+        {% endfor %}
+
+        <hr>
+
+        {% if product.stock > 0 %}
+            <button
+                class="add-to-cart"
+                data-id="{{ product.id }}"
+            >
+                Добавить в корзину
+            </button>
+        {% else %}
+            <strong>Нет в наличии</strong>
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

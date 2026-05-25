@@ -1,0 +1,59 @@
+<div class="nav">
+    <li>
+        <ul><a href="{{ path('homepage') }}">Home</a></ul>
+        <ul><a href="{{ path('product_list') }}">Products</a></ul>
+        
+        <ul>
+        <div class="cart-wrapper">
+            🛒 Cart (<span id="cart-count">{{ app.session.get('cart')|length }}</span>)
+
+            <div id="mini-cart" class="mini-cart hidden"></div>
+        </div>
+        </ul>
+        <ul><a href="{{ path('cart_index') }}">
+            🛒 Cart (<span id="cart-count">{{ app.session.get('cart')|length }}</span>)
+        </a></ul>
+    </li>
+</div>
+
+<hr>
+
+{% if app.user %}
+    <p>Hello, <strong>{{ app.user.email }}</strong></p>
+
+    <a href="{{ path('account_index') }}">My orders</a><br><br>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('admin') }}">Админка</a><br><br>
+    {% endif %}
+
+    <a href="{{ path('app_logout') }}">Logout</a>
+{% else %}
+    <div class="login-box">
+        <form method="post" action="{{ path('app_login') }}">
+            <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                required
+            >
+
+            <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+            >
+
+            <input type="hidden" name="_csrf_token"
+                   value="{{ csrf_token('authenticate') }}"
+            >
+
+            <button type="submit">Login</button>
+        </form>
+
+        <p style="margin-top: 10px;">
+            <a href="{{ path('app_register') }}">Register</a>
+        </p>
+    </div>
+{% endif %}

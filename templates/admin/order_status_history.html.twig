@@ -1,0 +1,19 @@
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Status</th>
+            <th>User</th>
+            <th>Change Date</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for item in field.value %}
+        <tr>
+            <td>{{ item.newStatus }}</td>
+            <td>{{ item.changedBy.email }}</td>
+            <td>{{ item.createdAt.date }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

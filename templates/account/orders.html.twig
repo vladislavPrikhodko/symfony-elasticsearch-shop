@@ -1,0 +1,9 @@
+<h1>My orders</h1>
+
+{% for order in orders %}
+    <div>
+        Order #{{ order.id }} — status: {{ order.status }}
+    </div>
+{% else %}
+    <p>No orders yet.</p>
+{% endfor %}

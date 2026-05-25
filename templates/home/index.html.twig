@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<div class="catalog-layout">
+
+    <aside class="sidebar">
+
+        <h3>Категорії</h3>
+
+        <ul>
+
+            <li>
+                <a href="{{ path('homepage') }}">
+                    Всі товари
+                </a>
+            </li>
+
+            {% for category in categories %}
+                <li>
+                    <a href="{{ path('category_show', {
+                        slug: category.slug
+                    }) }}">
+                        {{ category.name }}
+                    </a>
+                </li>
+            {% endfor %}
+
+        </ul>
+
+    </aside>
+
+    <div class="catalog-content">
+        {% if currentCategory is defined %}
+            <h1>{{ currentCategory.name }}</h1>
+        {% else %}
+            <h1>Всі товари</h1>
+        {% endif %}
+        <form method="get" class="catalog-filters">
+
+            <input
+                type="text"
+                name="q"
+                placeholder="Пошук товарів..."
+                value="{{ app.request.query.get('q') }}"
+            >
+
+            <select name="sorting">
+
+                <option value="">
+                    Сортування
+                </option>
+
+                <option
+                    value="price_asc"
+                    {% if sort == 'price_asc' %}selected{% endif %}
+                >
+                    Ціна ↑
+                </option>
+
+                <option
+                    value="price_desc"
+                    {% if sort == 'price_desc' %}selected{% endif %}
+                >
+                    Ціна ↓
+                </option>
+
+                <option
+                    value="name_asc"
+                    {% if sort == 'name_asc' %}selected{% endif %}
+                >
+                    Назва
+                </option>
+
+            </select>
+
+            <button>
+                Застосувати
+            </button>
+
+        </form>
+        <div class="products-grid">
+
+            {% for product in products %}
+
+                <div class="product-card">
+
+                    <a href="{{ path('product_show', {
+                        slug: product.slug
+                    }) }}">
+
+                        {% if product.image %}
+                            <img
+                                src="/uploads/products/{{ product.image }}"
+                                class="product-image"
+                            >
+                        {% endif %}
+
+                    </a>
+
+                    <h3 class="product-title">
+                        {{ product.name }}
+                    </h3>
+
+                    <div class="product-price">
+                        {{ product.price }} грн
+                    </div>
+
+                    {% if product.stock > 0 %}
+                        <button
+                            class="add-to-cart"
+                            data-id="{{ product.id }}"
+                        >
+                            До корзини
+                        </button>
+                    {% else %}
+                        <strong>Немає в наявності</strong>
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        <div class="pagination">
+
+            {{ knp_pagination_render(products) }}
+
+        </div>
+    </div>
+
+</div>
+
+
+
+{% endblock %}

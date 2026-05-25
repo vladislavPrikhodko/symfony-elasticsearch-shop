@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1>Кошик</h1>
+
+{% if items is empty %}
+
+    <p>Кошик порожній</p>
+
+{% else %}
+
+    <div class="cart-table">
+
+        {% for item in items %}
+
+            <div class="cart-row" data-id="{{ item.product.id }}">
+
+                <div class="cart-product">
+
+                    {% if item.product.image %}
+                        <img src="/uploads/products/{{ item.product.image }}">
+                    {% endif %}
+
+                    <div class="cart-product-name">
+                        {{ item.product.name }}
+                    </div>
+
+                </div>
+
+                <div class="cart-price">
+                    {{ item.product.price }} грн
+                </div>
+
+                <div class="cart-qty">
+
+                    <button class="qty-minus">
+                        -
+                    </button>
+
+                    <span class="qty-value">
+                        {{ item.quantity }}
+                    </span>
+
+                    <button class="qty-plus">
+                        +
+                    </button>
+
+                </div>
+
+                <div class="item-total">
+                    {{ item.sum }} грн
+                </div>
+
+                <button class="remove-item">
+                    ✕
+                </button>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="cart-summary">
+
+    <div class="cart-summary-box">
+
+            <h2>
+                Загалом:
+                <span id="cart-total">
+                    {{ total }}
+                </span>
+                грн
+            </h2>
+
+            <a
+                href="{{ path('cart_checkout') }}"
+                class="checkout-btn"
+            >
+                Оформити замовлення
+            </a>
+
+        </div>
+
+    </div>
+
+
+{% endif %}
+{% endblock %}

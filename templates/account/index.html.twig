@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+{% set statusMap = {
+    'new':      { label: 'Новый',     class: 'secondary' },
+    'paid':     { label: 'Оплачен',   class: 'primary' },
+    'shipped':  { label: 'Отправлен', class: 'success' },
+    'canceled': { label: 'Отменён',   class: 'danger' }
+} %}
+
+{% block title %}Мои заказы{% endblock %}
+
+{% block body %}
+    <h1>Мои заказы</h1>
+    <form method="get" class="mb-3">
+        <div class="row g-2">
+            <div class="col-md-4">
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="">Все статусы</option>
+                    <option value="new" {{ status == 'new' ? 'selected' }}>Новый</option>
+                    <option value="paid" {{ status == 'paid' ? 'selected' }}>Оплачен</option>
+                    <option value="shipped" {{ status == 'shipped' ? 'selected' }}>Отправлен</option>
+                    <option value="canceled" {{ status == 'canceled' ? 'selected' }}>Отменён</option>
+                </select>
+            </div>
+        </div>
+    </form>
+    {% if orders is empty %}
+        <p>У вас пока нет заказов.</p>
+    {% else %}
+        
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Дата</th>
+                <th>Статус</th>
+                <th>Сумма</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>#{{ order.id }}</td>
+                    <td>{{ order.createdAt|date('d.m.Y H:i') }}</td>
+                    <td>
+                        {% set s = statusMap[order.status] ?? null %}
+
+                        {% if s %}
+                            <span class="badge bg-{{ s.class }}">
+                                {{ s.label }}
+                            </span>
+                        {% else %}
+                            <span class="badge bg-dark">
+                                {{ order.status }}
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>{{ order.total }} грн</td>
+                    <td>
+                        {% if order.status == 'new' %}
+                            <form
+                                method="post"
+                                action="{{ path('account_order_cancel', { id: order.id }) }}"
+                                onsubmit="return confirm('Вы уверены, что хотите отменить заказ?');"
+                                class="d-inline"
+                            >
+                                <input type="hidden" name="_token"
+                                    value="{{ csrf_token('cancel-order-' ~ order.id) }}">
+
+                                <button class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-x-circle"></i> Отменить заказ
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if order.status == 'new' %}
+                            <form method="post"
+                                action="{{ path('account_order_pay', {id: order.id}) }}"
+                                style="display:inline">
+                                <input type="hidden" name="_token"
+                                    value="{{ csrf_token('pay' ~ order.id) }}">
+                                <button class="btn btn-success btn-sm">
+                                    💳 Оплатить
+                                </button>
+                            </form>
+                        {% endif %}
+                        {% if order.paidAt %}
+                            <small class="text-muted">
+                                Оплачен: {{ order.paidAt|date('d.m.Y H:i') }}
+                            </small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('account_order_show', {id: order.id}) }}">
+                            Подробнее
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if pages > 1 %}
+            <nav>
+                <ul class="pagination">
+                    {% for p in 1..pages %}
+                        <li class="page-item {{ p == page ? 'active' }}">
+                            <a class="page-link"
+                            href="{{ path('account_index', {
+                                page: p,
+                                status: status
+                            }) }}">
+                                {{ p }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+{% set statusMap = {
+    'new':      { label: 'Новый',     class: 'secondary' },
+    'paid':     { label: 'Оплачен',   class: 'primary' },
+    'shipped':  { label: 'Отправлен', class: 'success' },
+    'canceled': { label: 'Отменён',   class: 'danger' }
+} %}
+
+{% block title %}Заказ #{{ order.id }}{% endblock %}
+
+{% block body %}
+    <h1>Заказ #{{ order.id }}</h1>
+
+    <p>
+        Статус:
+        {% set s = statusMap[order.status] ?? null %}
+        {% if s %}
+            <span class="badge bg-{{ s.class }}">{{ s.label }}</span>
+        {% else %}
+            {{ order.status }}
+        {% endif %}
+        Дата: {{ order.createdAt|date('d.m.Y H:i') }}
+    </p>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Товар</th>
+            <th>Цена</th>
+            <th>Кол-во</th>
+            <th>Сумма</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in order.items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.price }} грн</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.price * item.quantity }} грн</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('account_index') }}">← Назад</a>
+{% endblock %}
